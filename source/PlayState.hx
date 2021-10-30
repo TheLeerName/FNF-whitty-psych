@@ -625,6 +625,23 @@ class PlayState extends MusicBeatState
 					bg.antialiasing = false;
 					add(bg);
 				}
+			case 'alley':
+				var bg:BGSprite = new BGSprite('whitty/whittyBack', -500, -300, 0.9, 0.9);
+				add(bg);
+
+				var stageFront:BGSprite = new BGSprite('whitty/whittyFront', -650, 600, 0.9, 0.9);
+				stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
+				stageFront.updateHitbox();
+				add(stageFront);
+
+			case 'ballisticAlley':
+				var bg:BGSprite = new BGSprite('whitty/ballisticBG', -600, -200, 0.9, 0.9, ['Background Whitty Moving'], true, 16);
+				add(bg);
+
+				var stageFront:BGSprite = new BGSprite('whitty/whittyFront', -650, 600, 0.9, 0.9);
+				stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
+				stageFront.updateHitbox();
+				add(stageFront);
 		}
 
 		if(isPixelStage) {
