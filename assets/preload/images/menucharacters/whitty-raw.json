@@ -1,0 +1,10 @@
+{
+	"image": "Menu_Whitty-raw",
+	"position": [
+		190,
+		206
+	],
+	"scale": 0.5,
+	"idle_anim": "Whitty idle dance",
+	"confirm_anim": "Whitty idle dance"
+}
