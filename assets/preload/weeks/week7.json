@@ -1,18 +1,18 @@
 {
 	"songs": [
-		["Senpai", "senpai-pixel", [255, 120, 191]],
-		["Roses", "senpai-pixel", [255, 120, 191]],
-		["Thorns", "spirit-pixel", [255, 120, 191]]
+		["Lo-Fight", "whitty", [69, 71, 125]],
+		["Overload", "whitty", [69, 71, 125]],
+		["Ballistic", "whittyCrazy", [143, 0, 31]]
 	],
 
 	"weekCharacters": [
-		"monster",
+		"whitty",
 		"bf",
 		"gf"
 	],
-	"weekBackground": "school",
+	"weekBackground": "nothing",
 
-	"storyName": "hating simulator ft. moawling",
+	"storyName": "back alley blitz",
 	"weekBefore": "week6",
 	"weekName": "Week 7",
 	"startUnlocked": true,
