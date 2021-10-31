@@ -229,6 +229,10 @@ class PlayState extends MusicBeatState
 	public var inCutscene:Bool = false;
 	var songLength:Float = 0;
 
+	var optionsWatermark:FlxText;
+	var versionWatermark:FlxText;
+	var songWatermark:FlxText;
+
 	#if desktop
 	// Discord RPC variables
 	var storyDifficultyText:String = "";
@@ -724,6 +728,8 @@ class PlayState extends MusicBeatState
 					gfVersion = 'gf-christmas';
 				case 'school' | 'schoolEvil':
 					gfVersion = 'gf-pixel';
+				case 'alley' | 'ballisticAlley':
+					gfVersion = 'gf-pixel';
 				default:
 					gfVersion = 'gf';
 			}
@@ -895,6 +901,21 @@ class PlayState extends MusicBeatState
 		healthBar.visible = !ClientPrefs.hideHud;
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
+
+		// Add watermarks from KE, i fucking hate that PsychE does not have it lol
+
+		optionsWatermark = new FlxText(4, (ClientPrefs.ghostTapping ? "GhosTap | " : "") + "Speed " + SONG.speed);
+		versionWatermark = new FlxText(4, "FNF Whitty PsychE Port V" + MainMenuState.modVersion, 16);
+		songWatermark = new FlxText(4,healthBarBG.y + 50,0,SONG.song + " - " + CoolUtil.difficultyString(), 16);
+
+		optionsWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		versionWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		songWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+
+		optionsWatermark.scrollFactor.set();
+		versionWatermark.scrollFactor.set();
+		songWatermark.scrollFactor.set();
+		add(songWatermark);
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
