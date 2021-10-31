@@ -729,7 +729,7 @@ class PlayState extends MusicBeatState
 				case 'school' | 'schoolEvil':
 					gfVersion = 'gf-pixel';
 				case 'alley' | 'ballisticAlley':
-					gfVersion = 'gf-pixel';
+					gfVersion = 'gf-whitty';
 				default:
 					gfVersion = 'gf';
 			}
