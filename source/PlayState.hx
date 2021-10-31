@@ -648,8 +648,6 @@ class PlayState extends MusicBeatState
 				add(wBg);
 
 				nwBg = new BGSprite('whitty/ballisticBG', -600, -200, 0.9, 0.9, ['Background Whitty Moving'], true, 16);
-				add(nwBg);
-				nwBg.visible = false;
 
 				wstageFront = new BGSprite('whitty/whittyFront', -650, 600, 0.9, 0.9);
 				wstageFront.setGraphicSize(Std.int(wstageFront.width * 1.1));
@@ -657,7 +655,7 @@ class PlayState extends MusicBeatState
 				add(wstageFront);
 
 				funneEffect = new BGSprite('whitty/thefunnyeffect', -600, -200, 1, 1);
-				funneEffect.alpha = 0.75;
+				funneEffect.alpha = 0.9;
 				funneEffect.scrollFactor.set();
 				add(funneEffect);
 				funneEffect.cameras = [camHUD];
@@ -1071,7 +1069,7 @@ class PlayState extends MusicBeatState
 				case 'senpai' | 'roses' | 'thorns':
 					if(daSong == 'roses') FlxG.sound.play(Paths.sound('ANGRY'));
 					schoolIntro(doof);
-				case 'lo-fight' | 'overhead' | 'ballistic':
+				case 'lo-fight' | 'overhead' | 'ballistic' | 'ballistic-old':
 					trace('whitty animation');
 					whittyAnimation(doof);
 				default:
@@ -1079,17 +1077,15 @@ class PlayState extends MusicBeatState
 			}
 			seenCutscene = true;
 		} 
-		else
+		else if (ClientPrefs.whittyCutscenes &&
+		(curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old'))
 		{
-			switch (curSong.toLowerCase())
-			{
-				case 'lo-fight' | 'overhead' | 'ballistic':
-					trace('whitty animation');
-					whittyAnimation(doof);
-				default:
-					startCountdown();
-			}
+			trace('whitty animation');
+			whittyAnimation(doof);
 		}
+		else
+			startCountdown();
+
 		RecalculateRating();
 
 		//PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
@@ -1104,7 +1100,6 @@ class PlayState extends MusicBeatState
 		super.create();
 	}
 
-	// sussy
 	function whittyAnimation(?dialogueBox:DialogueBox):Void
 	{
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.fromRGB(19, 0, 0));
@@ -1114,7 +1109,7 @@ class PlayState extends MusicBeatState
 		black2.alpha = 0;
 		var black3:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black3.scrollFactor.set();
-		if (curSong.toLowerCase() != 'ballistic')
+		if (curSong.toLowerCase() != 'ballistic' || curSong.toLowerCase() != 'ballistic-old')
 			add(black);
 
 		var epic:Bool = false;
@@ -1130,7 +1125,7 @@ class PlayState extends MusicBeatState
 
 		switch(curSong.toLowerCase()) // WHITTY ANIMATION CODE LMAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 		{
-			case 'ballistic':
+			case 'ballistic' | 'ballistic-old':
 				trace('funny ballistic!!!');
 				add(white);
 				var noMore:Bool = false;
@@ -1196,8 +1191,8 @@ class PlayState extends MusicBeatState
 										{
 											soljaBOY.play();
 											remove(wstageFront);
-											nwBg.visible = true;
-											wBg.visible = false;
+											add(nwBg);
+											remove(wBg);
 											nwBg.animation.addByPrefix('gaming', 'Background Whitty Startup', 24, false);
 											nwBg.animation.play('gaming');
 											camOther.shake(0.01, 3);
@@ -1674,7 +1669,7 @@ class PlayState extends MusicBeatState
 
 	public function startCountdown():Void
 	{
-		if (curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'Overhead' || curSong.toLowerCase() == 'ballistic')
+		if (curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'Overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old')
 		{
 			healthBarBG.visible = true;
 			healthBar.visible = true;
