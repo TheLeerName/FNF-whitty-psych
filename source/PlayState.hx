@@ -3287,7 +3287,7 @@ class PlayState extends MusicBeatState
 			return;
 		} else {
 			var achieve:String = checkForAchievement(['week1_nomiss', 'week2_nomiss', 'week3_nomiss', 'week4_nomiss',
-				'week5_nomiss', 'week6_nomiss', 'week7_nomiss', 'ur_bad',
+				'week5_nomiss', 'week6_nomiss', 'week7_nomiss', 'bonusweek_nomiss', 'ballisticold_nomiss', 'ur_bad',
 				'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']);
 
 			if(achieve != null) {
@@ -4357,7 +4357,7 @@ class PlayState extends MusicBeatState
 				var unlock:Bool = false;
 				switch(achievementName)
 				{
-					case 'week1_nomiss' | 'week2_nomiss' | 'week3_nomiss' | 'week4_nomiss' | 'week5_nomiss' | 'week6_nomiss' | 'week7_nomiss':
+					case 'week1_nomiss' | 'week2_nomiss' | 'week3_nomiss' | 'week4_nomiss' | 'week5_nomiss' | 'week6_nomiss' | 'bonusweek_nomiss':
 						if(isStoryMode && campaignMisses + songMisses < 1 && CoolUtil.difficultyString() == 'HARD' && storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice)
 						{
 							var weekName:String = WeekData.getWeekFileName();
@@ -4376,7 +4376,9 @@ class PlayState extends MusicBeatState
 								case 'week6':
 									if(achievementName == 'week6_nomiss') unlock = true;
 								case 'week7':
-									if(achievementName == 'week7_nomiss') unlock = true;
+									if(achievementName == 'bonusweek_nomiss') unlock = true;
+								case 'week8':
+									if(achievementName == 'ballisticold_nomiss') unlock = true;
 							}
 						}
 					case 'ur_bad':
@@ -4416,6 +4418,10 @@ class PlayState extends MusicBeatState
 						}
 					case 'debugger':
 						if(Paths.formatToSongPath(SONG.song) == 'test' && !usedPractice) {
+							unlock = true;
+						}
+					case 'ballisticold_nomiss':
+						if(Paths.formatToSongPath(SONG.song) == 'ballistic-old' && !usedPractice) {
 							unlock = true;
 						}
 				}
