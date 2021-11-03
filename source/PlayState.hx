@@ -1092,19 +1092,25 @@ class PlayState extends MusicBeatState
 					if(daSong == 'roses') FlxG.sound.play(Paths.sound('ANGRY'));
 					schoolIntro(doof);
 				case 'ballistic' | 'ballistic-old':
-					whittyAnimation(doof, true);
+					if (deathCounter > 0)
+						startCountdown();
+					else
+						whittyAnimation(doof, true);
 				case 'lo-fight' | 'overhead':
-					whittyAnimation(doof, false);
+					if (deathCounter > 0)
+						startCountdown();
+					else
+						whittyAnimation(doof, true);
 				default:
 					startCountdown();
 			}
 			seenCutscene = true;
 		} 
 		else if (ClientPrefs.whittyCutscenes &&
-		(curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead'))
-			whittyAnimation(doof, false);
+		(curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead') && deathCounter == 0)
+			whittyAnimation(doof, true);
 		else if (ClientPrefs.whittyCutscenes &&
-		(curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old'))
+		(curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old') && deathCounter == 0)
 			whittyAnimation(doof, true);
 		else
 			startCountdown();

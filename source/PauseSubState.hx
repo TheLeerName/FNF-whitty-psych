@@ -186,6 +186,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.usedPractice = true;
 					practiceText.visible = PlayState.practiceMode;
 				case "Restart Song":
+					PlayState.deathCounter++; // restart song is bad, buddy!
 					CustomFadeTransition.nextCamera = transCamera;
 					MusicBeatState.resetState();
 					FlxG.sound.music.volume = 0;
