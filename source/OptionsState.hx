@@ -705,11 +705,13 @@ class PreferencesSubstate extends MusicBeatSubstate
 	private static var curSelected:Int = 0;
 	static var unselectableOptions:Array<String> = [
 		'GRAPHICS',
-		'GAMEPLAY'
+		'GAMEPLAY',
+		'WHITTY'
 	];
 	static var noCheckbox:Array<String> = [
 		'Framerate',
-		'Note Delay'
+		'Note Delay',
+		'Lane Underlay'
 	];
 
 	static var options:Array<String> = [
@@ -720,14 +722,16 @@ class PreferencesSubstate extends MusicBeatSubstate
 		#if !html5
 		'Framerate', //Apparently 120FPS isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
 		#end
+		'WHITTY',
+		'Whitty Cutscenes',
+		'Kade Input',
+		'Lane Underlay',
 		'GAMEPLAY',
 		'Downscroll',
 		'Middlescroll',
-		'Kade Input',
 		'Ghost Tapping',
 		'Note Delay',
 		'Note Splashes',
-		'Whitty Cutscenes',
 		'Hide HUD',
 		'Hide Song Length',
 		'Flashing Lights',
@@ -892,6 +896,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Whitty Cutscenes':
 						ClientPrefs.whittyCutscenes = !ClientPrefs.whittyCutscenes;
 
+					case 'Kade Input':
+						ClientPrefs.kadeInput = !ClientPrefs.kadeInput;
+
 					case 'Flashing Lights':
 						ClientPrefs.flashing = !ClientPrefs.flashing;
 
@@ -900,9 +907,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 
 					case 'Swearing':
 						ClientPrefs.cursing = !ClientPrefs.cursing;
-
-					case 'Kade Input':
-						ClientPrefs.kadeInput = !ClientPrefs.kadeInput;
 
 					case 'Downscroll':
 						ClientPrefs.downScroll = !ClientPrefs.downScroll;
@@ -954,6 +958,14 @@ class PreferencesSubstate extends MusicBeatSubstate
 						ClientPrefs.noteOffset += add * mult;
 						if(ClientPrefs.noteOffset < 0) ClientPrefs.noteOffset = 0;
 						else if(ClientPrefs.noteOffset > 500) ClientPrefs.noteOffset = 500;
+					case 'Lane Underlay':
+						var mult:Int = 1;
+						if(holdTime > 1.5) { //x5 speed after 1.5 seconds holding
+							mult = 5;
+						}
+						ClientPrefs.laneUnderlay += add;
+						if(ClientPrefs.laneUnderlay < 0) ClientPrefs.laneUnderlay = 0;
+						else if(ClientPrefs.laneUnderlay > 100) ClientPrefs.laneUnderlay = 100;
 				}
 				reloadValues();
 
@@ -996,10 +1008,14 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, disables some background details,\ndecreases loading times and improves performance.";
 			case 'Persistent Cached Data':
 				daText = "If checked, images loaded will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.";
+			case 'Kade Input':
+				daText = "If checked, input from Shaggy mod will be used.\nThis don't mean that will be more than 4 arrows, of course.";
+			case 'Whitty Cutscenes':
+				daText = "If checked, animated cutscenes will be showed in Freeplay.";
+			case 'Lane Underlay':
+				daText = "Changes transparency of lane underlay behind the notes.\nIf 0%, then it not showing.\nIf 100%, then will be a black square.";
 			case 'Anti-Aliasing':
 				daText = "If unchecked, disables anti-aliasing, increases performance\nat the cost of the graphics not looking as smooth.";
-			case 'Kade Input':
-				daText = "If checked, input from Shaggy mod will be used. (this does not mean that there will be more than 4 arrows lol)";
 			case 'Downscroll':
 				daText = "If checked, notes go Down instead of Up, simple enough.";
 			case 'Middlescroll':
@@ -1012,8 +1028,6 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If unchecked, you won't get disgusted as frequently.";
 			case 'Note Splashes':
 				daText = "If unchecked, hitting \"Sick!\" notes won't show particles.";
-			case 'Whitty Cutscenes':
-				daText = "If unchecked, Whitty animated cutscenes won't showing in FreePlay.";
 			case 'Flashing Lights':
 				daText = "Uncheck this if you're sensitive to flashing lights!";
 			case 'Camera Zooms':
@@ -1076,10 +1090,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.noteSplashes;
 					case 'Whitty Cutscenes':
 						daValue = ClientPrefs.whittyCutscenes;
-					case 'Flashing Lights':
-						daValue = ClientPrefs.flashing;
 					case 'Kade Input':
 						daValue = ClientPrefs.kadeInput;
+					case 'Flashing Lights':
+						daValue = ClientPrefs.flashing;
 					case 'Downscroll':
 						daValue = ClientPrefs.downScroll;
 					case 'Middlescroll':
@@ -1111,6 +1125,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daText = '' + ClientPrefs.framerate;
 					case 'Note Delay':
 						daText = ClientPrefs.noteOffset + 'ms';
+					case 'Lane Underlay':
+						daText = '' + ClientPrefs.laneUnderlay + '%';
 				}
 				var lastTracker:FlxSprite = text.sprTracker;
 				text.sprTracker = null;
