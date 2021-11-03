@@ -723,6 +723,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		'GAMEPLAY',
 		'Downscroll',
 		'Middlescroll',
+		'Kade Input',
 		'Ghost Tapping',
 		'Note Delay',
 		'Note Splashes',
@@ -900,6 +901,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 					case 'Swearing':
 						ClientPrefs.cursing = !ClientPrefs.cursing;
 
+					case 'Kade Input':
+						ClientPrefs.kadeInput = !ClientPrefs.kadeInput;
+
 					case 'Downscroll':
 						ClientPrefs.downScroll = !ClientPrefs.downScroll;
 
@@ -994,6 +998,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, images loaded will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.";
 			case 'Anti-Aliasing':
 				daText = "If unchecked, disables anti-aliasing, increases performance\nat the cost of the graphics not looking as smooth.";
+			case 'Kade Input':
+				daText = "If checked, input from Shaggy mod will be used. (this does not mean that there will be more than 4 arrows lol)";
 			case 'Downscroll':
 				daText = "If checked, notes go Down instead of Up, simple enough.";
 			case 'Middlescroll':
@@ -1072,6 +1078,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.whittyCutscenes;
 					case 'Flashing Lights':
 						daValue = ClientPrefs.flashing;
+					case 'Kade Input':
+						daValue = ClientPrefs.kadeInput;
 					case 'Downscroll':
 						daValue = ClientPrefs.downScroll;
 					case 'Middlescroll':

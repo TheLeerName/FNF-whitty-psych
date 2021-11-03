@@ -918,7 +918,7 @@ class PlayState extends MusicBeatState
 
 		// Add watermarks from KE, i fucking hate that PsychE does not have it lol
 
-		optionsWatermark = new FlxText(4, (ClientPrefs.ghostTapping ? "GhosTap | " : "") + "Speed " + SONG.speed);
+		optionsWatermark = new FlxText(4, (ClientPrefs.ghostTapping ? "GhosTap | " : "") + (ClientPrefs.kadeInput ? "KadeInput | " : "") + "Speed " + SONG.speed);
 		versionWatermark = new FlxText(4, "FNF Whitty PsychE Port V" + MainMenuState.modVersion, 16);
 		songWatermark = new FlxText(4,healthBarBG.y + 50,0,SONG.song + " - " + CoolUtil.difficultyString(), 16);
 
@@ -3458,17 +3458,23 @@ class PlayState extends MusicBeatState
 
 		var daRating:String = "sick";
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.75)
+		if (noteDiff > Conductor.safeZoneOffset * (ClientPrefs.kadeInput ? 0.85 : 0.75))
 		{
 			daRating = 'shit';
-			score = 50;
+			if (ClientPrefs.kadeInput)
+			{
+				score = -100;
+				health -= 0.35;
+			}
+			else
+				score = 50;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.5)
+		else if (noteDiff > Conductor.safeZoneOffset * (ClientPrefs.kadeInput ? 0.6 : 0.5))
 		{
 			daRating = 'bad';
 			score = 100;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.25)
+		else if (noteDiff > Conductor.safeZoneOffset * (ClientPrefs.kadeInput ? 0.2 : 0.25))
 		{
 			daRating = 'good';
 			score = 200;
@@ -3693,8 +3699,9 @@ class PlayState extends MusicBeatState
 
 							}
 						}
-						else if (canMiss) 
-							ghostMiss(controlArray[i], i, true);
+						/*else if (canMiss) 
+							ghostMiss(controlArray[i], i, true);*/
+						// fuck ur anti mash
 
 						// I dunno what you need this for but here you go
 						//									- Shubs
