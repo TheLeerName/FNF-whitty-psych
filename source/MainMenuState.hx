@@ -25,7 +25,7 @@ using StringTools;
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '0.4.2'; //This is also used for Discord RPC
-	public static var modVersion:String = Application.current.meta.get('version');
+	public static var modVersion:String = '1.0-nightly2'; // LOL why Application.current.meta.get('version') is not working????
 
 	public static var curSelected:Int = 0;
 

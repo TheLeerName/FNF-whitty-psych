@@ -1069,20 +1069,21 @@ class PlayState extends MusicBeatState
 				case 'senpai' | 'roses' | 'thorns':
 					if(daSong == 'roses') FlxG.sound.play(Paths.sound('ANGRY'));
 					schoolIntro(doof);
-				case 'lo-fight' | 'overhead' | 'ballistic' | 'ballistic-old':
-					trace('whitty animation');
-					whittyAnimation(doof);
+				case 'ballistic' | 'ballistic-old':
+					whittyAnimation(doof, true);
+				case 'lo-fight' | 'overhead':
+					whittyAnimation(doof, false);
 				default:
 					startCountdown();
 			}
 			seenCutscene = true;
 		} 
 		else if (ClientPrefs.whittyCutscenes &&
-		(curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old'))
-		{
-			trace('whitty animation');
-			whittyAnimation(doof);
-		}
+		(curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead'))
+			whittyAnimation(doof, false);
+		else if (ClientPrefs.whittyCutscenes &&
+		(curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old'))
+			whittyAnimation(doof, true);
 		else
 			startCountdown();
 
@@ -1100,7 +1101,7 @@ class PlayState extends MusicBeatState
 		super.create();
 	}
 
-	function whittyAnimation(?dialogueBox:DialogueBox):Void
+	function whittyAnimation(?dialogueBox:DialogueBox, isBallistic:Bool = false):Void
 	{
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.fromRGB(19, 0, 0));
 		black.scrollFactor.set();
@@ -1109,7 +1110,7 @@ class PlayState extends MusicBeatState
 		black2.alpha = 0;
 		var black3:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black3.scrollFactor.set();
-		if (curSong.toLowerCase() != 'ballistic' || curSong.toLowerCase() != 'ballistic-old')
+		if (!isBallistic)
 			add(black);
 
 		var epic:Bool = false;
@@ -1669,7 +1670,7 @@ class PlayState extends MusicBeatState
 
 	public function startCountdown():Void
 	{
-		if (curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'Overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old')
+		if (curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old')
 		{
 			healthBarBG.visible = true;
 			healthBar.visible = true;
