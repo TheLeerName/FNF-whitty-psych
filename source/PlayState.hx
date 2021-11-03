@@ -1153,6 +1153,13 @@ class PlayState extends MusicBeatState
 				add(white);
 				var noMore:Bool = false;
 				inCutscene = true;
+				laneunderlay.visible = false;
+				laneunderlayOpponent.visible = false;
+				healthBarBG.visible = false;
+				healthBar.visible = false;
+				scoreTxt.visible = false;
+				iconP1.visible = false;
+				iconP2.visible = false;
 
 				var wind:FlxSound = new FlxSound().loadEmbedded(Paths.sound('windLmao', 'shared'),true);
 				var mBreak:FlxSound = new FlxSound().loadEmbedded(Paths.sound('micBreak', 'shared'));
@@ -1272,11 +1279,6 @@ class PlayState extends MusicBeatState
 											{
 												camHUD.visible = true;
 												wind.fadeOut();
-												healthBarBG.visible = false;
-												healthBar.visible = false;
-												scoreTxt.visible = false;
-												iconP1.visible = false;
-												iconP2.visible = false;
 												add(dialogueBox);
 											}
 											else
@@ -1294,6 +1296,14 @@ class PlayState extends MusicBeatState
 			case 'lo-fight':
 				trace('funny lo-fight!!!');
 				inCutscene = true;
+				laneunderlay.visible = false;
+				laneunderlayOpponent.visible = false;
+				healthBarBG.visible = false;
+				healthBar.visible = false;
+				scoreTxt.visible = false;
+				iconP1.visible = false;
+				iconP2.visible = false;
+
 				dadGroup.remove(dad);
 				var animation:FlxSprite = new FlxSprite(-290,-100);
 				animation.frames = Paths.getSparrowAtlas('whitty/whittyCutscene','shared');
@@ -1407,11 +1417,6 @@ class PlayState extends MusicBeatState
 										{
 													if (dialogueBox != null)
 													{
-														healthBarBG.visible = false;
-														healthBar.visible = false;
-														scoreTxt.visible = false;
-														iconP1.visible = false;
-														iconP2.visible = false;
 														add(dialogueBox);
 														city.fadeOut();
 													}
@@ -1694,6 +1699,8 @@ class PlayState extends MusicBeatState
 	{
 		if (curSong.toLowerCase() == 'lo-fight' || curSong.toLowerCase() == 'overhead' || curSong.toLowerCase() == 'ballistic' || curSong.toLowerCase() == 'ballistic-old')
 		{
+			laneunderlay.visible = true;
+			laneunderlayOpponent.visible = true;
 			healthBarBG.visible = true;
 			healthBar.visible = true;
 			scoreTxt.visible = true;
