@@ -141,8 +141,8 @@ class PlayState extends MusicBeatState
 	private static var prevCamFollowPos:FlxObject;
 	private static var resetSpriteCache:Bool = false;
 
-	public var laneunderlay:FlxSprite;
-	public var laneunderlayOpponent:FlxSprite;
+	public static var laneunderlay:FlxSprite;
+	public static var laneunderlayOpponent:FlxSprite;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
@@ -809,6 +809,23 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
+		laneunderlayOpponent = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		laneunderlayOpponent.alpha = ClientPrefs.laneUnderlay / 100;
+		laneunderlayOpponent.color = FlxColor.BLACK;
+		laneunderlayOpponent.scrollFactor.set();
+
+		laneunderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		laneunderlay.alpha = ClientPrefs.laneUnderlay / 100;
+		laneunderlay.color = FlxColor.BLACK;
+		laneunderlay.scrollFactor.set();
+
+		if (ClientPrefs.laneUnderlay > 0)
+		{
+			if (!ClientPrefs.middleScroll)
+				add(laneunderlayOpponent);
+			add(laneunderlay);
+		}
+
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 20, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		timeTxt.scrollFactor.set();
@@ -838,23 +855,6 @@ class PlayState extends MusicBeatState
 		add(timeBar);
 		add(timeTxt);
 		timeBarBG.sprTracker = timeBar;
-
-		laneunderlayOpponent = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-		laneunderlayOpponent.alpha = ClientPrefs.laneUnderlay / 100;
-		laneunderlayOpponent.color = FlxColor.BLACK;
-		laneunderlayOpponent.scrollFactor.set();
-
-		laneunderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
-		laneunderlay.alpha = ClientPrefs.laneUnderlay / 100;
-		laneunderlay.color = FlxColor.BLACK;
-		laneunderlay.scrollFactor.set();
-
-		if (ClientPrefs.laneUnderlay > 0)
-		{
-			if (!ClientPrefs.middleScroll)
-				add(laneunderlayOpponent);
-			add(laneunderlay);
-		}
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
