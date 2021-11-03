@@ -11,8 +11,8 @@
 	"weekBackground": "nothing",
 
 	"storyName": "back alley blitz",
-	"weekBefore": "week7",
-	"weekName": "Week 8",
+	"weekBefore": "week2",
+	"weekName": "ballistic",
 	"startUnlocked": true,
 
 	"hideStoryMode": true,

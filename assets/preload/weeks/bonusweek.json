@@ -13,8 +13,8 @@
 	"weekBackground": "nothing",
 
 	"storyName": "back alley blitz",
-	"weekBefore": "week6",
-	"weekName": "Week 7",
+	"weekBefore": "week1",
+	"weekName": "bonusweek",
 	"startUnlocked": true,
 
 	"hideStoryMode": false,
