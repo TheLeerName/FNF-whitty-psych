@@ -1140,6 +1140,14 @@ class PlayState extends MusicBeatState
 		white.scrollFactor.set();
 		white.alpha = 0;
 
+		laneunderlay.visible = false;
+		laneunderlayOpponent.visible = false;
+		healthBarBG.visible = false;
+		healthBar.visible = false;
+		scoreTxt.visible = false;
+		iconP1.visible = false;
+		iconP2.visible = false;
+
 		//trace('what animation to play, hmmmm');
 
 		var wat:Bool = true;
@@ -1153,13 +1161,6 @@ class PlayState extends MusicBeatState
 				add(white);
 				var noMore:Bool = false;
 				inCutscene = true;
-				laneunderlay.visible = false;
-				laneunderlayOpponent.visible = false;
-				healthBarBG.visible = false;
-				healthBar.visible = false;
-				scoreTxt.visible = false;
-				iconP1.visible = false;
-				iconP2.visible = false;
 
 				var wind:FlxSound = new FlxSound().loadEmbedded(Paths.sound('windLmao', 'shared'),true);
 				var mBreak:FlxSound = new FlxSound().loadEmbedded(Paths.sound('micBreak', 'shared'));
@@ -1296,13 +1297,6 @@ class PlayState extends MusicBeatState
 			case 'lo-fight':
 				trace('funny lo-fight!!!');
 				inCutscene = true;
-				laneunderlay.visible = false;
-				laneunderlayOpponent.visible = false;
-				healthBarBG.visible = false;
-				healthBar.visible = false;
-				scoreTxt.visible = false;
-				iconP1.visible = false;
-				iconP2.visible = false;
 
 				dadGroup.remove(dad);
 				var animation:FlxSprite = new FlxSprite(-290,-100);
@@ -1370,6 +1364,7 @@ class PlayState extends MusicBeatState
 										case 147:
 											if (!BEEP.playing)
 												{
+													trace('hi bitch');
 													camFollowPos.x = 750;
 													camFollowPos.y = 400;
 													BEEP.play();
