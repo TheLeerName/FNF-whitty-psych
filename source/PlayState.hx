@@ -103,6 +103,7 @@ class PlayState extends MusicBeatState
 
 	public var songSpeedTween:FlxTween;
 	public var songSpeed(default, set):Float = 1;
+	public var songSpeed_stat:Float = 1;
 	
 	public var boyfriendGroup:FlxSpriteGroup;
 	public var dadGroup:FlxSpriteGroup;
@@ -133,6 +134,9 @@ class PlayState extends MusicBeatState
 	private var camFollowPos:FlxObject;
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
+
+	public var laneunderlay:FlxSprite;
+	public var laneunderlayOpponent:FlxSprite;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
@@ -237,7 +241,7 @@ class PlayState extends MusicBeatState
 	public var inCutscene:Bool = false;
 	var songLength:Float = 0;
 
-	var optionsWatermark:FlxText;
+	public var optionsWatermark:FlxText;
 	var versionWatermark:FlxText;
 	var songWatermark:FlxText;
 
@@ -845,6 +849,18 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
 
+		laneunderlayOpponent = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2, FlxColor.BLACK);
+		laneunderlayOpponent.alpha = ClientPrefs.laneUnderlay / 100;
+		laneunderlayOpponent.scrollFactor.set();
+
+		laneunderlay = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2, FlxColor.BLACK);
+		laneunderlay.alpha = ClientPrefs.laneUnderlay / 100;
+		laneunderlay.scrollFactor.set();
+
+		if (!ClientPrefs.middleScroll)
+			add(laneunderlayOpponent);
+		add(laneunderlay);
+
 		var showTime:Bool = (ClientPrefs.timeBarType != 'Disabled');
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -991,7 +1007,10 @@ class PlayState extends MusicBeatState
 
 		// Add watermarks from KE, i fucking hate that PsychE does not have it lol
 
-		optionsWatermark = new FlxText(4, (ClientPrefs.ghostTapping ? "GhosTap | " : "") + (ClientPrefs.kadeInput ? "KadeInput | " : "") + "Speed " + SONG.speed);
+		optionsWatermark = new FlxText(4, FlxG.height * 0.91 + 11, 0,
+			(ClientPrefs.ghostTapping ? "GhosTap | " : "")
+		  + (FlxMath.roundDecimal(ClientPrefs.speed, 2) == FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) ? "Speed " + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2)
+		  : "Speed " + FlxMath.roundDecimal(ClientPrefs.speed, 2) + " (" + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) + ")"));
 		versionWatermark = new FlxText(4, "FNF Whitty PsychE Port V" + MainMenuState.modVersion, 16);
 		songWatermark = new FlxText(4,healthBarBG.y + 50,0,SONG.song + " - " + CoolUtil.difficultyString(), 16);
 
@@ -1044,6 +1063,8 @@ class PlayState extends MusicBeatState
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
+		laneunderlay.cameras = [camHUD];
+		laneunderlayOpponent.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
@@ -1498,6 +1519,13 @@ class PlayState extends MusicBeatState
 		if(ret != FunkinLua.Function_Stop) {
 			generateStaticArrows(0);
 			generateStaticArrows(1);
+
+			laneunderlayOpponent.x = opponentStrums.members[0].x - 25;
+			laneunderlayOpponent.screenCenter(Y);
+
+			laneunderlay.x = playerStrums.members[0].x - 25;
+			laneunderlay.screenCenter(Y);
+
 			for (i in 0...playerStrums.length) {
 				setOnLuas('defaultPlayerStrumX' + i, playerStrums.members[i].x);
 				setOnLuas('defaultPlayerStrumY' + i, playerStrums.members[i].y);
@@ -1688,9 +1716,13 @@ class PlayState extends MusicBeatState
 	private function generateSong(dataPath:String):Void
 	{
 		// FlxG.log.add(ChartParser.parse());
-		songSpeed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1);
 		
 		var songData = SONG;
+
+		ClientPrefs.speed = FlxMath.roundDecimal(songData.speed, 2);
+		songSpeed = ClientPrefs.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1);
+		songSpeed_stat = songData.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1);
+
 		Conductor.changeBPM(songData.bpm);
 		
 		curSong = songData.song;
@@ -2962,18 +2994,27 @@ class PlayState extends MusicBeatState
 				if(Math.isNaN(val1)) val1 = 1;
 				if(Math.isNaN(val2)) val2 = 0;
 
-				var newValue:Float = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
-
 				if(val2 <= 0)
 				{
-					songSpeed = newValue;
+					songSpeed = ClientPrefs.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
+					songSpeed_stat = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
+					ClientPrefs.speed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
+					optionsWatermark.text =
+						  (ClientPrefs.ghostTapping ? "GhosTap | " : "")
+						+ (FlxMath.roundDecimal(ClientPrefs.speed, 2) == FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) ? "Speed " + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2)
+						: "Speed " + FlxMath.roundDecimal(ClientPrefs.speed, 2) + " (" + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) + ")");
 				}
 				else
 				{
-					songSpeedTween = FlxTween.tween(this, {songSpeed: newValue}, val2, {ease: FlxEase.linear, onComplete:
+					songSpeedTween = FlxTween.tween(this, {songSpeed: ClientPrefs.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1, songSpeed_stat: SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1}, val2, {ease: FlxEase.linear, onComplete:
 						function (twn:FlxTween)
 						{
 							songSpeedTween = null;
+							ClientPrefs.speed = SONG.speed * ClientPrefs.getGameplaySetting('scrollspeed', 1) * val1;
+							optionsWatermark.text =
+								  (ClientPrefs.ghostTapping ? "GhosTap | " : "")
+								+ (FlxMath.roundDecimal(ClientPrefs.speed, 2) == FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) ? "Speed " + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2)
+								: "Speed " + FlxMath.roundDecimal(ClientPrefs.speed, 2) + " (" + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) + ")");
 						}
 					});
 				}

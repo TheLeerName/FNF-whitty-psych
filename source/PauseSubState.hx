@@ -13,6 +13,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
+import flixel.math.FlxMath;
 
 class PauseSubState extends MusicBeatSubstate
 {
@@ -26,6 +27,8 @@ class PauseSubState extends MusicBeatSubstate
 	var pauseMusic:FlxSound;
 	var practiceText:FlxText;
 	//var botplayText:FlxText;
+	var laneunderlayThing:FlxText;
+	var scrollspeedThing:FlxText;
 
 	public static var transCamera:FlxCamera;
 
@@ -112,6 +115,21 @@ class PauseSubState extends MusicBeatSubstate
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
 
+		var funnyThing:FlxText = new FlxText(5, 18, 0, "Hello chat", 12);
+		funnyThing.scrollFactor.set();
+		funnyThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(funnyThing);
+
+		laneunderlayThing = new FlxText(5, 38, 0, "Lane Underlay (Press Shift and Left or Right): " + ClientPrefs.laneUnderlay + "%", 12);
+		laneunderlayThing.scrollFactor.set();
+		laneunderlayThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(laneunderlayThing);
+
+		scrollspeedThing = new FlxText(5, 58, 0, "Scroll Speed (Press Ctrl and Left or Right): " + FlxMath.roundDecimal(ClientPrefs.speed, 2), 12);
+		scrollspeedThing.scrollFactor.set();
+		scrollspeedThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(scrollspeedThing);
+
 		for (i in 0...menuItems.length)
 		{
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
@@ -122,9 +140,12 @@ class PauseSubState extends MusicBeatSubstate
 
 		changeSelection();
 
+		ClientPrefs.speed = FlxMath.roundDecimal(PlayState.instance.songSpeed, 2);
+
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
+	var holdTime:Float = 0;
 	override function update(elapsed:Float)
 	{
 		if (pauseMusic.volume < 0.5)
@@ -132,20 +153,48 @@ class PauseSubState extends MusicBeatSubstate
 
 		super.update(elapsed);
 
-		var upP = controls.UI_UP_P;
-		var downP = controls.UI_DOWN_P;
-		var accepted = controls.ACCEPT;
-
-		if (upP)
+		if (controls.UI_LEFT || controls.UI_RIGHT)
 		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
+			var add:Int = controls.UI_LEFT ? -1 : 1;
+			if(holdTime > 0.5 || controls.UI_LEFT_P || controls.UI_RIGHT_P)
+			{
+				var mult:Int = 1;
 
-		if (accepted)
+				if (FlxG.keys.pressed.SHIFT)
+				{
+					if(holdTime > 1) mult = 2; // x2 speed after 1 second holding
+					ClientPrefs.laneUnderlay += add * mult;
+					if (ClientPrefs.laneUnderlay < 0) ClientPrefs.laneUnderlay = 0;
+					else if (ClientPrefs.laneUnderlay > 100) ClientPrefs.laneUnderlay = 100;
+
+					PlayState.instance.laneunderlayOpponent.alpha = ClientPrefs.laneUnderlay / 100;
+					PlayState.instance.laneunderlay.alpha = ClientPrefs.laneUnderlay / 100;
+					FlxG.save.data.laneUnderlay = ClientPrefs.laneUnderlay;
+					FlxG.save.flush();
+					laneunderlayThing.text = "Lane Underlay (Press Shift and Left or Right): " + ClientPrefs.laneUnderlay + "%";
+				}
+				else if (FlxG.keys.pressed.CONTROL)
+				{
+					if(holdTime > 1) mult = 4; // x4 speed after 1 second holding
+					ClientPrefs.speed += (add * mult)/100;
+					if (ClientPrefs.speed < 0.01) ClientPrefs.speed = 0.01;
+					else if (ClientPrefs.speed > 10) ClientPrefs.speed = 10;
+
+					PlayState.instance.songSpeed = FlxMath.roundDecimal(ClientPrefs.speed, 2);
+					PlayState.instance.optionsWatermark.text =
+						  (ClientPrefs.ghostTapping ? "GhosTap | " : "")
+						+ (FlxMath.roundDecimal(ClientPrefs.speed, 2) == FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) ? "Speed " + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2)
+						: "Speed " + FlxMath.roundDecimal(ClientPrefs.speed, 2) + " (" + FlxMath.roundDecimal(PlayState.instance.songSpeed_stat, 2) + ")");
+					scrollspeedThing.text = "Scroll Speed (Press Ctrl and Left or Right): " + FlxMath.roundDecimal(ClientPrefs.speed, 2);
+				}
+			}
+			holdTime += elapsed;
+		} else holdTime = 0;
+
+		if (controls.UI_UP_P) changeSelection(-1);
+		if (controls.UI_DOWN_P) changeSelection(1);
+
+		if (controls.ACCEPT)
 		{
 			var daSelected:String = menuItems[curSelected];
 			if(difficultyChoices.contains(daSelected)) {

@@ -39,6 +39,9 @@ class ClientPrefs {
 		'opponentplay' => false
 	];
 
+	public static var laneUnderlay:Int = 10;
+	public static var speed:Float = 0;
+
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var keSustains:Bool = false; //i was bored, okay?
 	
@@ -112,6 +115,9 @@ class ClientPrefs {
 		FlxG.save.data.safeFrames = safeFrames;
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
+
+		FlxG.save.data.laneUnderlay = laneUnderlay;
+		FlxG.save.data.speed = speed;
 	
 		FlxG.save.flush();
 
@@ -234,6 +240,11 @@ class ClientPrefs {
 		{
 			FlxG.sound.muted = FlxG.save.data.mute;
 		}
+
+		if(FlxG.save.data.laneUnderlay != null)
+			laneUnderlay = FlxG.save.data.laneUnderlay;
+		if(FlxG.save.data.speed != null)
+			speed = FlxG.save.data.speed;
 
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
