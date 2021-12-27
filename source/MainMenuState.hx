@@ -26,6 +26,7 @@ using StringTools;
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '0.5.1'; //This is also used for Discord RPC
+	public static var modVersion:String; // loads in function create(), and you can change this in project.xml :)
 	public static var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
@@ -36,9 +37,6 @@ class MainMenuState extends MusicBeatState
 		'story_mode',
 		'freeplay',
 		#if MODS_ALLOWED 'mods', #end
-		#if ACHIEVEMENTS_ALLOWED 'awards', #end
-		'credits',
-		#if !switch 'donate', #end
 		'options'
 	];
 
@@ -49,6 +47,7 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		modVersion = Application.current.meta.get('version');
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
@@ -125,11 +124,15 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollowPos, null, 1);
 
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 64, 0, "Whitty PsychE Port v" + modVersion, 12);
+		versionShit.scrollFactor.set();
+		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(versionShit);
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v0.2.7", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -198,56 +201,43 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (optionShit[curSelected] == 'donate')
-				{
-					CoolUtil.browserLoad('https://ninja-muffin24.itch.io/funkin');
-				}
-				else
-				{
-					selectedSomethin = true;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
+				selectedSomethin = true;
+				FlxG.sound.play(Paths.sound('confirmMenu'));
 
-					if(ClientPrefs.flashing) FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+				if(ClientPrefs.flashing) FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
-					menuItems.forEach(function(spr:FlxSprite)
+				menuItems.forEach(function(spr:FlxSprite)
+				{
+					if (curSelected != spr.ID)
 					{
-						if (curSelected != spr.ID)
-						{
-							FlxTween.tween(spr, {alpha: 0}, 0.4, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
-								{
-									spr.kill();
-								}
-							});
-						}
-						else
-						{
-							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+						FlxTween.tween(spr, {alpha: 0}, 0.4, {
+							ease: FlxEase.quadOut,
+							onComplete: function(twn:FlxTween)
 							{
-								var daChoice:String = optionShit[curSelected];
+								spr.kill();
+							}
+						});
+					}
+					else
+					{
+						FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+						{
+							var daChoice:String = optionShit[curSelected];
 
-								switch (daChoice)
-								{
-									case 'story_mode':
-										MusicBeatState.switchState(new StoryMenuState());
-									case 'freeplay':
-										MusicBeatState.switchState(new FreeplayState());
-									#if MODS_ALLOWED
-									case 'mods':
-										MusicBeatState.switchState(new ModsMenuState());
-									#end
-									case 'awards':
-										MusicBeatState.switchState(new AchievementsMenuState());
-									case 'credits':
-										MusicBeatState.switchState(new CreditsState());
-									case 'options':
-										MusicBeatState.switchState(new options.OptionsState());
-								}
-							});
-						}
-					});
-				}
+							switch (daChoice)
+							{
+								case 'story_mode':
+									MusicBeatState.switchState(new StoryMenuState());
+								case 'freeplay':
+									MusicBeatState.switchState(new FreeplayState());
+								case 'awards':
+									MusicBeatState.switchState(new AchievementsMenuState());
+								case 'options':
+									MusicBeatState.switchState(new options.OptionsState());
+							}
+						});
+					}
+				});
 			}
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))

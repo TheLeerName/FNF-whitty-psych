@@ -237,6 +237,10 @@ class PlayState extends MusicBeatState
 	public var inCutscene:Bool = false;
 	var songLength:Float = 0;
 
+	var optionsWatermark:FlxText;
+	var versionWatermark:FlxText;
+	var songWatermark:FlxText;
+
 	#if desktop
 	// Discord RPC variables
 	var storyDifficultyText:String = "";
@@ -985,6 +989,28 @@ class PlayState extends MusicBeatState
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
 
+		// Add watermarks from KE, i fucking hate that PsychE does not have it lol
+
+		optionsWatermark = new FlxText(4, (ClientPrefs.ghostTapping ? "GhosTap | " : "") + (ClientPrefs.kadeInput ? "KadeInput | " : "") + "Speed " + SONG.speed);
+		versionWatermark = new FlxText(4, "FNF Whitty PsychE Port V" + MainMenuState.modVersion, 16);
+		songWatermark = new FlxText(4,healthBarBG.y + 50,0,SONG.song + " - " + CoolUtil.difficultyString(), 16);
+
+		optionsWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		versionWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		songWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+
+		optionsWatermark.scrollFactor.set();
+		versionWatermark.scrollFactor.set();
+		songWatermark.scrollFactor.set();
+
+		optionsWatermark.y = FlxG.height * 0.91 + 11;
+		versionWatermark.y = FlxG.height * 0.91 + 28;
+		songWatermark.y = FlxG.height * 0.91 + 45;
+
+		add(optionsWatermark);
+		add(versionWatermark);
+		add(songWatermark);
+
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
 		iconP1.visible = !ClientPrefs.hideHud;
@@ -1028,6 +1054,9 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
+		optionsWatermark.cameras = [camHUD];
+		versionWatermark.cameras = [camHUD];
+		songWatermark.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
